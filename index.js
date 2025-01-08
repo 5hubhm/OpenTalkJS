@@ -1,107 +1,50 @@
-//Task_1
+const ollama = require("ollama");
+const fs = require("fs");
+const path = require("path");
 
-// import ollama from "ollama";
+// Define the base folder for questions and output file
+const baseFolder = "./Questions";
+const outputFile = "./Answer.txt";
 
-// async function runChat() {
-//   try {
-//     const response = await ollama.chat({
-//       model: "llama3.2:latest",
-//       messages: [{ role: 'user', content: "Generate a resignation letter" }]
-//     });
+// Function to get a random question from a folder
+function getRandomQuestion(folder) {
+  const files = fs.readdirSync(folder);  // Synchronous read
+  const randomFile = files[Math.floor(Math.random() * files.length)];
+  const questionPath = path.join(folder, randomFile);
+  return fs.readFileSync(questionPath, "utf-8");  // Synchronous read
+}
 
-//     console.log("Chatbot Response:", response.message.content);
-//   } catch (error) {
-//     console.error("Error occurred:", error.message);
-//   }
-// }
+// Function to get an answer using ollama
+async function generateAnswer(question) {
+  const response = await ollama.chat({
+    model: "llama3.2:latest",
+    messages: [{ role: "user", content: question }],
+  });
+  return response.message.content;
+}
 
-// runChat();
+// Main function
+async function main() {
+  const questionType = process.argv[2]?.toLowerCase();
+  if (!questionType) {
+    console.error("Please provide a question type (creative, professional, academic).");
+    return;
+  }
 
-//----------------------------------------------------------------------------------------------------------------------------//
-//----------------------------------------------------------------------------------------------------------------------------//
-
-//Task_2
-
-// import ollama from "ollama";
-// import fs from "fs";
-
-// let q= fs.readFileSync("./q.txt", "utf-8");
-// console.log(q)
-
-// askQuestion()
-// async function askQuestion() {
-//   try {
-//     const response = await ollama.chat({
-//       model: "llama3.2:latest",
-//       messages: [{ role: 'user', content: q }]
-//     });
-
-//     fs.writeFileSync("./a.txt", response.message.content);
-
-//   } catch (error) {
-//     console.error("Error occurred:", error.message);
-//   }
-// }
-
-
-
-//----------------------------------------------------------------------------------------------------------------------------//
-//----------------------------------------------------------------------------------------------------------------------------//
-
-
-//Task 3
-
-import ollama from "ollama";
-import fs from "fs/promises";
-import path from "path";
-
-async function readQuestionsAndAnswer() {
-  const questionsFolder = "./Questions";
-  const answersFolder = "./Answers";
-
+  const questionFolder = path.join(baseFolder, questionType);
   try {
-    // Ensure the Answers folder exists
-    await fs.mkdir(answersFolder, { recursive: true });
+    const question = getRandomQuestion(questionFolder);
+    console.log(`Selected question: ${question}`);
 
-    // Read all files in the Questions folder
-    const questionFiles = await fs.readdir(questionsFolder);
+    const answer = await generateAnswer(question);
+    console.log(`Generated answer: ${answer}`);
 
-    // Process each question file
-    await Promise.all(
-      questionFiles.map(async (file) => {
-        const questionPath = path.join(questionsFolder, file);
-        const answerPath = path.join(answersFolder, file);
-
-        try {
-          const questionContent = await fs.readFile(questionPath, "utf-8");
-          const answerContent = await askQuestion(questionContent);
-          await fs.writeFile(answerPath, answerContent);
-          console.log(`Processed: ${file}`);
-        } catch (error) {
-          console.error(`Error processing ${file}:`, error.message);
-        }
-      })
-    );
-
-    console.log("All questions processed.");
+    fs.writeFileSync(outputFile, `Question: ${question}\nAnswer: ${answer}`);  // Synchronous write
+    console.log(`Answer saved to ${outputFile}`);
   } catch (error) {
-    console.error("Error reading questions:", error.message);
+    console.error("Error:", error.message);
   }
 }
 
-async function askQuestion(question) {
-  try {
-    const response = await ollama.chat({
-      model: "llama3.2:latest",
-      messages: [{ role: "user", content: question }],
-    });
-    return response.message.content;
-  } catch (error) {
-    console.error("Error occurred while asking question:", error.message);
-    throw error;
-  }
-}
-
-// Call the main function
-readQuestionsAndAnswer();
-
+// Run the main function
+main();
