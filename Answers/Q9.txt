@@ -1,0 +1,71 @@
+**Code Documentation Guidelines**
+
+This document outlines the guidelines for writing clear and concise code documentation. The purpose of code documentation is to provide a clear understanding of the code's functionality, behavior, and maintenance requirements.
+
+**Documentation Style**
+
+The recommended style for code documentation is the Google Style Guide (GSG). This guide provides a set of conventions and best practices for writing readable and maintainable code comments.
+
+### Comment Structure
+
+A comment should start with a blank line to separate it from the surrounding code. The format of a comment is as follows:
+
+```
+# Brief description of the function or variable
+## Detailed explanation of the functionality or behavior
+### Additional information or context
+```
+
+### Comment Examples
+
+*   Function documentation:
+    ```python
+def greet(name):
+    """
+    Returns a greeting message for the given name.
+    
+    Args:
+        name (str): The name to use in the greeting.
+    
+    Returns:
+        str: A greeting message.
+    """
+    return f"Hello, {name}!"
+```
+
+*   Variable documentation:
+    ```python
+MAX_SIZE = 1024  # Maximum size of a buffer in bytes
+
+# Example usage:
+buffer_size = MAX_SIZE
+if buffer_size > 1000:
+    print("Buffer too large!")
+else:
+    print("Buffer is small enough!")
+```
+
+### Best Practices
+
+*   Keep comments concise and focused on the functionality or behavior.
+*   Use clear and descriptive language.
+*   Avoid excessive commenting. Comments should be used to explain the code, not to duplicate it.
+*   Use Markdown formatting for headings and lists.
+*   Include a clear description of any complex logic or algorithms.
+
+**Tools for Code Documentation**
+
+There are several tools available that can help with code documentation, including:
+
+*   Sphinx: A popular tool for generating documentation from comments in Python code.
+*   Javadoc: A Java-specific tool for generating documentation from comments and annotations.
+*   Doxygen: A general-purpose tool for generating documentation from comments.
+
+**Best Practices for Using Code Documentation Tools**
+
+*   Use the recommended format and style for your comments.
+*   Ensure that all comments are properly formatted and consistent throughout the codebase.
+*   Test the generated documentation to ensure it accurately reflects the code's functionality and behavior.
+*   Regularly update the documentation to reflect changes to the code.
+
+By following these guidelines and best practices, you can create clear and concise code documentation that helps other developers understand your code and maintain it over time.
